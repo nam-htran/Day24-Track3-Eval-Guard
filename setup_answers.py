@@ -85,10 +85,13 @@ def run_query(q: str, search, reranker, top_k: int) -> tuple[str, list[str]]:
     if OPENAI_API_KEY and contexts:
         try:
             from openai import OpenAI
-            client = OpenAI()
+            client = OpenAI(
+                base_url=os.getenv("OPENAI_BASE_URL", "https://api.openai.com/v1"),
+                api_key=os.getenv("OPENAI_API_KEY", "test")
+            )
             ctx = "\n\n".join(contexts)
             resp = client.chat.completions.create(
-                model="gpt-4o-mini",
+                model=os.getenv("JUDGE_MODEL", "gpt-4o-mini"),
                 messages=[
                     {"role": "system", "content": "Trả lời CHỈ dựa trên context. Nếu không có → nói 'Không tìm thấy.'"},
                     {"role": "user",   "content": f"Context:\n{ctx}\n\nCâu hỏi: {q}"},

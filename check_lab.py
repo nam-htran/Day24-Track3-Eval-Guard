@@ -88,9 +88,11 @@ def main():
 
     # 6. Test suite
     print("\n[6] Test suite:")
+    env = os.environ.copy()
+    env["PYTHONPATH"] = ""
     result = subprocess.run(
-        ["pytest", "tests/", "--tb=short", "-q"],
-        capture_output=True, text=True,
+        ["pytest", "-p", "no:launch_testing_ros", "-p", "no:launch_testing", "tests/", "--tb=short", "-q"],
+        capture_output=True, text=True, env=env
     )
     tests_ok = result.returncode == 0
     total += 1
